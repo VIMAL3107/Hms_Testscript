@@ -27,6 +27,8 @@ def get_suite(test_name=None):
             "bulk_invoice": "tests.test_bulk_invoice",
             "stay_view": "tests.test_stay_view",
             "reservation": "tests.test_reservation",
+            "checkin": "tests.test_checkin",
+            "checkout": "tests.test_checkout",
             "full_flow": "tests.test_full_flow",
         }
         module = test_map.get(test_name)

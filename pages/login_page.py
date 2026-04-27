@@ -23,15 +23,7 @@ class LoginPage:
         except Exception:
             print("[SKIP] Get Started not found")
 
-        self.driver.implicitly_wait(2)
-
-        try:
-            self.driver.find_element(AppiumBy.ACCESSIBILITY_ID, "Skip").click()
-            print("[OK] Clicked Skip")
-        except Exception:
-            print("[SKIP] Skip not found")
-
-        self.driver.implicitly_wait(3)
+        self.driver.implicitly_wait(1)
 
     def enter_username(self, username=LOGIN_USERNAME):
         """Enter the username into the first EditText field."""

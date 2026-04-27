@@ -7,7 +7,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 
-from config.settings import EXPLICIT_WAIT_LONG
+from config.settings import EXPLICIT_WAIT_LONG, EXPLICIT_WAIT_SHORT
 
 
 class BulkInvoicePage:
@@ -16,6 +16,57 @@ class BulkInvoicePage:
     def __init__(self, driver):
         self.driver = driver
         self.wait = WebDriverWait(driver, EXPLICIT_WAIT_LONG)
+
+    # ───────────── Navigation ─────────────
+
+    def navigate_to_bulk_invoice(self):
+        """Open the side menu, search for 'Bulk Invoice', and click it."""
+        print("\n=== NAVIGATING TO BULK INVOICE ===")
+        wait = WebDriverWait(self.driver, EXPLICIT_WAIT_SHORT)
+
+        # Step 1: Open drawer via swipe
+        print("[INFO] Swiping to open menu...")
+        self.driver.swipe(5, 500, 500, 500, 1000)
+        time.sleep(1)
+
+        # Step 2: Search for Bulk Invoice
+        try:
+            search = wait.until(
+                lambda d: d.find_element(AppiumBy.CLASS_NAME, "android.widget.EditText")
+            )
+            search.click()
+            time.sleep(1)
+            try:
+                search.clear()
+            except Exception:
+                pass
+            time.sleep(1)
+            search.send_keys("Bulk Invoice")
+            print("[OK] Typed 'Bulk Invoice' in search bar")
+            time.sleep(1)
+            try:
+                self.driver.hide_keyboard()
+            except Exception:
+                pass
+        except Exception as e:
+            print(f"[ERROR] Search bar not found: {e}")
+            return False
+
+        # Step 3: Click the Bulk Invoice menu item
+        try:
+            menu_btn = wait.until(
+                lambda d: d.find_element(
+                    AppiumBy.XPATH,
+                    "//*[not(contains(@class, 'EditText')) and "
+                    "(contains(@text,'Bulk Invoice') or contains(@content-desc,'Bulk Invoice'))]",
+                )
+            )
+            menu_btn.click()
+            print("[OK] Clicked Bulk Invoice menu item")
+            return True
+        except Exception as e:
+            print(f"[ERROR] Bulk Invoice menu item not found: {e}")
+            return False
 
     # ───────────── Waits / Verifications ─────────────
 
@@ -65,20 +116,19 @@ class BulkInvoicePage:
         """Wait for and return all invoice elements on screen."""
         print("[WAIT] Waiting for invoice list...")
         try:
-            self.wait.until(
+            invoices = self.wait.until(
                 lambda d: d.find_elements(
                     AppiumBy.XPATH,
                     "//*[contains(@text, 'INV') or contains(@content-desc, 'INV')]",
-                )
+                ) or None
             )
-            invoices = self.driver.find_elements(
-                AppiumBy.XPATH,
-                "//*[contains(@text, 'INV') or contains(@content-desc, 'INV')]",
-            )
-            print(f"[OK] Found {len(invoices)} invoice(s)")
-            return invoices
-        except TimeoutException:
+            if invoices:
+                print(f"[OK] Found {len(invoices)} invoice(s)")
+                return invoices
             print("[ERROR] No invoices found")
+            return []
+        except TimeoutException:
+            print("[ERROR] No invoices found (timeout)")
             return []
 
     def select_first_invoice(self):

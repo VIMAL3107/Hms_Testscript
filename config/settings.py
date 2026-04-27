@@ -30,17 +30,22 @@ CAPABILITIES = {
     "automationName": "UiAutomator2",
     "deviceName": "Android",
     "udid": "c0f6a4c5",
-    "appPackage": "com.example.hms_backoffice",
+    "appPackage": "com.nexgenaastra.hmsbackoffice",
     "appActivity": ".MainActivity",
     "language": "en",
-    "locale": "US"
+    "locale": "US",
+    "newCommandTimeout": 300,
+    "adbExecTimeout": 60000,
+    "uiautomator2ServerInstallTimeout": 60000,
+    "uiautomator2ServerReadTimeout": 60000,
+    "noReset": True,
 }
 
 
 # ─────────────────────────────────────────────
 # Test Data / Credentials
 # ─────────────────────────────────────────────
-LOGIN_USERNAME = "hms"
+LOGIN_USERNAME = "kamesh"
 LOGIN_PIN = "1234"
 
 
@@ -52,7 +57,7 @@ EXPLICIT_WAIT_SHORT = 5
 EXPLICIT_WAIT_DEFAULT = 10
 EXPLICIT_WAIT_LONG = 15
 
-STABILIZE_DELAY = 2       # General UI stabilization delay
-MENU_LOAD_DELAY = 2       # Wait after opening a menu
-SCREEN_LOAD_DELAY = 3     # Wait after navigating to a new screen
-SCROLL_DELAY = 1.5        # Wait between scroll actions
+STABILIZE_DELAY = 2       
+MENU_LOAD_DELAY = 2       
+SCREEN_LOAD_DELAY = 3     
+SCROLL_DELAY = 1.5        
