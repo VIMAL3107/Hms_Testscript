@@ -9,11 +9,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from config.settings import EXPLICIT_WAIT_SHORT, MENU_LOAD_DELAY
 
 
-class MenuPage:
-    """Page Object for the side navigation menu."""
+from pages.base_page import BasePage
 
-    def __init__(self, driver):
-        self.driver = driver
+class MenuPage(BasePage):
+    """Page Object for the side navigation menu."""
 
     # ───────────── Actions ─────────────
 
@@ -31,42 +30,29 @@ class MenuPage:
             time.sleep(1)
 
     def open_drawer(self):
-        """Open the navigation drawer via swipe + menu button click."""
+        """Open the navigation drawer."""
         print("\n=== OPEN MENU ===")
         try:
+            # Dismiss twice to be sure
             self.dismiss_overlay()
-
-            print("[INFO] Swiping left→right to open drawer...")
-            self.driver.swipe(5, 500, 500, 500, 1000)
-            time.sleep(1)
-
-            wait = WebDriverWait(self.driver, EXPLICIT_WAIT_SHORT)
-
-            def find_menu_btn(d):
-                candidates = d.find_elements(
+            self.dismiss_overlay()
+            
+            wait = WebDriverWait(self.driver, 10)
+            menu_btn = wait.until(
+                lambda d: d.find_element(
                     AppiumBy.XPATH,
-                    "//android.widget.ImageView[@clickable='true' and @index='0']",
+                    '(//android.widget.ImageView[@clickable="true"])[1]',
                 )
-                if candidates:
-                    return candidates[0]
-                for img in d.find_elements(
-                    AppiumBy.XPATH, "//android.widget.ImageView[@clickable='true']"
-                ):
-                    if img.location["x"] < 150 and img.location["y"] < 250:
-                        return img
-                return None
-
-            try:
-                wait.until(find_menu_btn).click()
-                print("[OK] Menu button clicked")
-            except Exception:
-                print("[SKIP] Menu button not found, swipe may have worked")
-
-            time.sleep(MENU_LOAD_DELAY)
+            )
+            menu_btn.click()
+            time.sleep(1.5)
+            print("[OK] Menu drawer opened")
+            return True
         except Exception:
             print("[FALLBACK] Tapping menu coordinates (67, 131)")
             self.driver.tap([(67, 131)])
             time.sleep(1)
+            return True
 
     def search_and_navigate(self, menu_item_name):
         """
@@ -118,10 +104,34 @@ class MenuPage:
             print(f"[ERROR] Failed to navigate to '{menu_item_name}': {e}")
             return False
 
-    def navigate_to(self, menu_item_name):
+    def navigate_to(self, menu_item_names, force_search=False):
         """
-        Full flow: open drawer → search → click menu item.
-        Returns True on success.
+        Full flow: open drawer → try direct find → fallback to search.
+        Can accept a string or a list of variations.
         """
+        if isinstance(menu_item_names, str):
+            menu_item_names = [menu_item_names]
+
         self.open_drawer()
-        return self.search_and_navigate(menu_item_name)
+        
+        if not force_search:
+            for name in menu_item_names:
+                # Try direct find first
+                try:
+                    xpath = f"//*[not(contains(@class, 'EditText')) and (contains(@text,'{name}') or contains(@content-desc,'{name}'))]"
+                    item = self.driver.find_element(AppiumBy.XPATH, xpath)
+                    if item.is_displayed():
+                        item.click()
+                        print(f"[OK] Direct clicked '{name}'")
+                        self.wait_for_loading()
+                        return True
+                except:
+                    pass
+
+        # Fallback to search (or forced search) variations one by one
+        for name in menu_item_names:
+            if self.search_and_navigate(name):
+                self.wait_for_loading()
+                return True
+        
+        return False

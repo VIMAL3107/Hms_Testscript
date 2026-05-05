@@ -29,23 +29,26 @@ CAPABILITIES = {
     "platformName": "Android",
     "automationName": "UiAutomator2",
     "deviceName": "Android",
-    "udid": "c0f6a4c5",
+    "udid": "emulator-5554",
     "appPackage": "com.nexgenaastra.hmsbackoffice",
     "appActivity": ".MainActivity",
+    "appWaitActivity": "*",
+    "appWaitDuration": 30000,
     "language": "en",
     "locale": "US",
     "newCommandTimeout": 300,
     "adbExecTimeout": 60000,
     "uiautomator2ServerInstallTimeout": 60000,
-    "uiautomator2ServerReadTimeout": 60000,
+    "uiautomator2ServerReadTimeout": 60000,                            
     "noReset": True,
+    "autoLaunch": True,
 }
 
 
 # ─────────────────────────────────────────────
 # Test Data / Credentials
 # ─────────────────────────────────────────────
-LOGIN_USERNAME = "kamesh"
+LOGIN_USERNAME = "leo"
 LOGIN_PIN = "1234"
 
 

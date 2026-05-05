@@ -1,35 +1,63 @@
 """
-Test Stay View — validates the Stay View screen navigation and scrolling.
+Test Stay View — validates the Stay View screen functionality.
 """
 
 import time
+import unittest
 from core.base_test import BaseTest
-from pages.login_page import LoginPage
-from pages.menu_page import MenuPage
-from pages.stay_view_page import StayViewPage
+from pages.stayview import stayview_page
 
 
 class TestStayView(BaseTest):
-    """Test cases for the Stay View screen."""
+    """Test cases for the Stay View screen using stayview_page POM."""
 
-    def test_01_stay_view_scroll(self):
-        """Login → Navigate to Stay View → Scroll through content."""
-        # Step 1: Login
-        login_page = LoginPage(self.driver)
-        login_page.login()
+    def test_01_stayview_full_flow(self):
+        stayview = stayview_page(self.driver)
 
-        # Step 2: Navigate via menu
-        menu_page = MenuPage(self.driver)
-        menu_page.navigate_to("Stay View")
+        if not stayview.navigate_to_stayview():
+            self.fail("Failed to navigate to Stay View screen")
 
-        # Step 3: Interact with Stay View
-        stay_view_page = StayViewPage(self.driver)
-        stay_view_page.wait_for_screen()
-        stay_view_page.scroll_content(times=4)
+        if not stayview.wait_for_screen():
+            self.fail("Stay View screen did not load")
 
-        print("[OK] Stay View flow completed")
+        if not stayview.select_first_occupied_room():
+            self.fail("Failed to select an occupied room")
+        
+        if not stayview.Schedule_Cleaning():
+            self.fail("Failed to complete Schedule Cleaning flow") 
+        
+        if not stayview.select_first_occupied_room():
+            self.fail("Failed to select an occupied room (refresh for Add Charge)")    
+        
+        if not stayview.add_charge():
+            self.fail("Failed to add charge to room")        
+       
+        if not stayview.click_modify_stay():
+            self.fail("Could not click Modify Stay")
+        
+        if not stayview.wait_for_modify_stay_dialog():
+            self.fail("Modify Stay dialog did not open")
+
+        #Modify checkout date
+        
+        if not stayview.tap_checkout_date_field():
+            self.fail("Could not open checkout date picker")
+        
+        if not stayview.select_next_day():
+            self.fail("Could not select next day")
+        
+        if not stayview.confirm_date_picker():
+            self.fail("Could not confirm date")
+        
+        if not stayview.confirm_time_picker():
+            self.fail("Could not confirm time")
+
+        #Confirm the modification
+        if not stayview.confirm_modify_stay():
+            self.fail("Could not confirm Modify Stay")
+
+        print("[OK] Stay View test completed successfully")
 
 
 if __name__ == "__main__":
-    import unittest
     unittest.main()

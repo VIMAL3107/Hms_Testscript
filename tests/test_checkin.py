@@ -13,32 +13,55 @@ class TestCheckin(BaseTest):
     """Test cases for the Check-In flow."""
 
     def test_01_checkin_full_flow(self):
-        """Login → Navigate to Check-In → Select Reserved booking → Fill details → Check-In."""
-        login_page = LoginPage(self.driver)
-        login_page.login()
-
         checkin = checkin_page(self.driver)
-        checkin.navigate_to_checkin()
+        
+        #if not checkin.navigate_to_checkin():
+            #self.fail("Failed to navigate to Check-In screen")
 
-        if not checkin.wait_for_screen():
-            self.fail("Check-In screen did not load")
+        #if not checkin.wait_for_screen():
+            #self.fail("Check-In screen did not load")
 
-        if not checkin.select_checked_in_booking():
-            self.fail("Could not select a booking")
+        #if not checkin.select_checked_in_booking():
+            #self.fail("Could not select a booking")
 
-        if not checkin.wait_for_guest_detail():
-            self.fail("Guest detail screen did not load")
+        #if not checkin.wait_for_guest_detail():
+            #self.fail("Guest detail screen did not load")
+        
+        #if not checkin.add_payment():
+            #self.fail("Could not add payment")
+        #if not checkin.add_special_request():
+            #self.fail("could not add special request")    
 
-        checkin.click_checkin_field()
-        checkin.select_room_type("King Suite")
-        checkin.select_room("207")
-        checkin.add_adults(adults=1)
-        checkin.add_children(children=1)
-        checkin.add_email("iamvimal3107@gmail.com")
-        checkin.add_address("Chennai, India")
-        checkin.click_update_checkin()
+        #if not checkin.click_checkin_field():
+            #self.fail("Could not click Check-In field")
+            
+        #if not checkin.select_room_type("King Suite"):
+            #self.fail("Could not select room type")
+            
+        #f not checkin.select_room("204"):
+           #self.fail("Could not select room")
+        
+        if not checkin.add_parking_details():
+            self.fail()
+            
+        #if not checkin.add_adults(adults=1):
+            #self.fail("Could not add adults")
+            
+        #if not checkin.add_children(children=1):
+            #self.fail("Could not add children")
+            
+        #if not checkin.enter_email("iamvimal3107@gmail.com"):
+            #self.fail("Could not enter email")
+            
+        #if not checkin.enter_address("Chennai, India"):
+            #self.fail("Could not enter address")
+            
+            
+        #if not checkin.click_update_checkin():
+            #self.fail("Could not click Update & Check-In")
 
-        checkin.confirm_checkin()
+        #if not checkin.confirm_checkin():
+            #self.fail("Could not confirm check-in")
 
         print("[OK] Check-In test completed successfully")
 

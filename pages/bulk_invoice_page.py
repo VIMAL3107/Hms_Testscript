@@ -10,15 +10,14 @@ from selenium.common.exceptions import TimeoutException
 from config.settings import EXPLICIT_WAIT_LONG, EXPLICIT_WAIT_SHORT
 
 
-class BulkInvoicePage:
-    """Page Object for the Bulk Invoice screen."""
+from pages.base_page import BasePage
 
-    def __init__(self, driver):
-        self.driver = driver
-        self.wait = WebDriverWait(driver, EXPLICIT_WAIT_LONG)
+class BulkInvoicePage(BasePage):
+    """Page Object for the Bulk Invoice screen."""
 
     # ───────────── Navigation ─────────────
 
+    @BasePage.auto_wait
     def navigate_to_bulk_invoice(self):
         """Open the side menu, search for 'Bulk Invoice', and click it."""
         print("\n=== NAVIGATING TO BULK INVOICE ===")
@@ -70,6 +69,7 @@ class BulkInvoicePage:
 
     # ───────────── Waits / Verifications ─────────────
 
+    @BasePage.auto_wait
     def wait_for_screen(self):
         """Wait until the Bulk Invoice screen is loaded."""
         print("[WAIT] Waiting for Bulk Invoice screen to load...")
@@ -88,6 +88,7 @@ class BulkInvoicePage:
 
     # ───────────── Date Range ─────────────
 
+    @BasePage.auto_wait
     def select_date_range(self, range_label="Last 7 Days"):
         """Open the date dropdown and select a range option."""
         print(f"[INFO] Selecting date range: {range_label}...")
@@ -112,6 +113,7 @@ class BulkInvoicePage:
 
     # ───────────── Invoice List ─────────────
 
+    @BasePage.auto_wait
     def get_invoices(self):
         """Wait for and return all invoice elements on screen."""
         print("[WAIT] Waiting for invoice list...")
@@ -131,6 +133,7 @@ class BulkInvoicePage:
             print("[ERROR] No invoices found (timeout)")
             return []
 
+    @BasePage.auto_wait
     def select_first_invoice(self):
         """Tap the checkbox area of the first invoice row."""
         print("[INFO] Selecting the first invoice...")
@@ -155,6 +158,7 @@ class BulkInvoicePage:
 
     # ───────────── Download ─────────────
 
+    @BasePage.auto_wait
     def click_download(self):
         """Attempt to find and click the Download button."""
         print("[WAIT] Looking for Download button...")

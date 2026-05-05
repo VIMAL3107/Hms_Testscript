@@ -85,12 +85,6 @@ class BaseTest(unittest.TestCase):
         ey = int(size["height"] * end_y_pct)
         self.driver.swipe(sx, sy, ex, ey, duration)
 
-    def scroll_down(self, times=1, delay=1.5):
-        """Scroll down the page a given number of times."""
-        for i in range(times):
-            self.swipe_screen()
-            print(f"[INFO] Scroll {i + 1}/{times}")
-            time.sleep(delay)
 
     def hide_keyboard_safe(self):
         """Hide the soft keyboard if visible."""

@@ -36,9 +36,40 @@ class TestReservation(BaseTest):
             print(f"[ERROR] Date selection failed: {e}")
 
         # Step 5: Select room type
-        reservation_page.select_room_type("Standard King")
+        reservation_page.select_room_type("King Suite")
 
-        print("[OK] Reservation flow completed")
+
+        # Step 7: Add Adults (example: +2)
+        reservation_page.add_adults(2)
+
+        # Step 8: Add Children (example: +1)
+        reservation_page.add_children(1)
+
+        # Step 9: Enter Mobile Number
+
+        reservation_page.enter_mobile_number("7540062368")
+         
+        # Step 10: Enter Guest Name
+
+        reservation_page.enter_guest_name("Leo")
+
+        # Step 11: Enter Email
+
+        reservation_page.enter_email("leo@gmail.com")
+
+        # Step 12: Enter Address
+
+        reservation_page.enter_address(
+        "Vetri theatre\nEast Tambaram, Tambaram, Chennai, Tamil Nadu"
+        )
+
+        # Step 13: Click Reserve Button
+
+        reservation_page.click_reserve_all_guests()
+
+        # Step 14: Click Proceed Button
+        reservation_page.click_proceed_button()
+        print("[OK] Reservation fully completed")
 
 
 if __name__ == "__main__":
