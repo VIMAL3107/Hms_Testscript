@@ -16,6 +16,21 @@ class TestStayView(BaseTest):
         stayview = stayview_page(self.driver)
         roomtransfer = RoomTransferPage(self.driver)
 
+        #resrvation
+        if not reservation.navigate_to_reservation():
+            self.fail()
+        if not reservation.wait_for_screen():
+            self.fail() 
+        if not reservation.click_fab_button():
+            self.fail()
+        if not reservation.click_checkin_field():
+            self.fail() 
+        if not reservation.select_auto_dates():
+            self.fail()  
+        if not reservation.select_dates():
+            self.fail()     
+
+
         if not stayview.navigate_to_stayview():
             self.fail("Failed to navigate to Stay View screen")
 
