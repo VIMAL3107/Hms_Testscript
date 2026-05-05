@@ -15,7 +15,7 @@ class CheckoutPage(BasePage):
 
     @BasePage.auto_wait
     def navigate_to_checkout(self):
-        """Open the side menu, search for 'Check-Out', and click it."""
+        """Open the side menu, search for 'Check-In', and click it."""
         print("\n=== NAVIGATING TO CHECK-OUT ===")
         menu = MenuPage(self.driver)
         # FIX: Navigating to Check-Out variations
