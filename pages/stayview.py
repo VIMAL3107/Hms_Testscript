@@ -95,7 +95,7 @@ class stayview_page(BasePage):
                 1000
             )
 
-            time.sleep(2)
+            time.sleep(0.5) # Reduced from 2.0
 
         print("[ERROR] No occupied room found after scrolling")
         return False
@@ -106,24 +106,21 @@ class stayview_page(BasePage):
             print("[INFO] Opening Schedule Cleaning popup")
             # Loop to find the button with scrolling
             button = None
-            for attempt in range(4):
-                try:
-                    # Try both Accessibility ID and XPath
-                    button = self.driver.find_element(AppiumBy.ACCESSIBILITY_ID, "Schedule Cleaning")
-                except:
-                    try:
-                        button = self.driver.find_element(AppiumBy.XPATH, "//*[contains(@content-desc,'Schedule Cleaning') or contains(@text,'Schedule Cleaning')]")
-                    except:
-                        pass
-
-                if button:
+            for attempt in range(5):
+                # Use find_elements to avoid implicit wait hits
+                buttons = self.driver.find_elements(AppiumBy.ACCESSIBILITY_ID, "Schedule Cleaning")
+                if not buttons:
+                    buttons = self.driver.find_elements(AppiumBy.XPATH, "//*[contains(@content-desc,'Schedule Cleaning') or contains(@text,'Schedule Cleaning')]")
+                
+                if buttons:
+                    button = buttons[0]
                     print(f"[OK] Found Schedule Cleaning button (Attempt {attempt + 1})")
                     break
                 
-                if attempt < 3:
+                if attempt < 4:
                     print(f"[INFO] Button not found, scrolling down (Attempt {attempt + 1})...")
                     self.scroll_down()
-                    time.sleep(1.5)
+                    time.sleep(0.5) # Reduced from 1.5
 
             if not button:
                 print("[ERROR] Schedule Cleaning button not found after scrolling")
@@ -220,39 +217,21 @@ class stayview_page(BasePage):
             print("[INFO] Opening Add Charge popup")
             button = None
             # ───── FIND ADD CHARGE BUTTON WITH SCROLL ─────
-            for attempt in range(4):
-                try:
-                    button = self.driver.find_element(
-                        AppiumBy.ACCESSIBILITY_ID, "Add Charge"
-                    )
-                except:
-                    try:
-                        button = self.driver.find_element(
-                            AppiumBy.XPATH,
-                            "//*[contains(@content-desc,'Add Charge') or contains(@text,'Add Charge')]"
-                        )
-                    except:
-                        pass
-
-                if button:
+            # Optimization: Use find_elements to avoid implicit wait delay
+            for attempt in range(5):
+                buttons = self.driver.find_elements(AppiumBy.ACCESSIBILITY_ID, "Add Charge")
+                if not buttons:
+                    buttons = self.driver.find_elements(AppiumBy.XPATH, "//*[contains(@content-desc,'Add Charge') or contains(@text,'Add Charge')]")
+                
+                if buttons:
+                    button = buttons[0]
                     print(f"[OK] Found Add Charge button (Attempt {attempt + 1})")
                     break
 
-                if attempt == 0:
-                    print("[INFO] Button not found, scrolling up...")
-                    size = self.driver.get_window_size()
-                    self.driver.swipe(
-                        size["width"] // 2,
-                        int(size["height"] * 0.3),
-                        size["width"] // 2,
-                        int(size["height"] * 0.7),
-                        700
-                    )
-                else:
-                    print("[INFO] Scrolling down...")
-                    self.scroll_down()
-
-                time.sleep(1.5)
+                # Scroll down to find the button (it's usually below the fold)
+                print(f"[INFO] Button not found, scrolling down (Attempt {attempt + 1})...")
+                self.scroll_down()
+                time.sleep(0.5)
 
             if not button:
                 print("[ERROR] Add Charge button not found")
